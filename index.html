@@ -1,50 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>three.js webgl - lensflares</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				background:#000;
-				padding:0;
-				margin:0;
-				font-weight: bold;
-				overflow:hidden;
-			}
-			#info {
-				position: absolute;
-				top: 10px; width: 100%;
-				color: #ffffff;
-				padding: 5px;
-				font-family: Monospace;
-				font-size: 13px;
-				text-align: center;
-				z-index:100;
-			}
-			a {
-				color: orange;
-				text-decoration: none;
-			}
-			a:hover {
-				color: #0080ff;
-			}
-		</style>
-	</head>
+<html lang="en" >
 
-	<body>
-		<div id="info">
-			<a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - lensflares -
-			textures from <a href="http://ro.me">ro.me</a> - fly with WASD/RF/QE + mouse
-		</div>
+<head>
+  <meta charset="UTF-8">
+  <title>Solar System</title>
+      <link rel="stylesheet" href="css/style.css">
+</head>
 
-		<script src="lib/three.js"></script>
+<body>
+  <div id="canvas">Use arrow key and your mouse to move</div>
 
-		<script src="lib/FlyControls.js"></script>
-		<script src="lib/Lensflare.js"></script>
-
-		<script src="lib/stats.min.js"></script>
-    <!--  Our code  -->
-    <script src="js/index.js"></script>
-  </body>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/three.js/98/three.min.js'></script>
+  <script src='js/OBJLoader.js'></script>
+    <script src='js/MTLLoader.js'></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/controlSetup.js"></script>
+  <script  src="js/index.js"></script>
+</body>
 </html>
