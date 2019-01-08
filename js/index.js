@@ -3,8 +3,8 @@ var renderer, scene, camera, composer, octoMain, skeleton, particle;
 var bar01, bar02;
 var loader;
 var controls;
-var width = 100;
-var height = 100;
+//var width = 100;
+//var height = 100;
 var starField
 //var radius = 6371;
 var clock;
@@ -29,11 +29,28 @@ function init(){
   //----------------------------------------------------------------------------
 
   // Create an empty scene
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0x000000 );
+
+  var background = new THREE.CubeTextureLoader()
+    .setPath( 'picture/' )
+  	.load( [ 'sky1.jpg', 'sky2.jpg', 'sky3.jpg', 'sky4.jpg', 'sky5.jpg', 'sky6.jpg' ] );
+  background.format = THREE.RGBFormat;
+	scene = new THREE.Scene();
+	scene.background = background;
+
+  /*scene = new THREE.Scene();
+  var envMap = new THREE.CubeTextureLoader().load( [
+      'picture/sky1.jpg', // right
+      'picture/sky2.jpg', // left
+      'picture/sky3.jpg', // top
+      'picture/sky4.jpg', // bottom
+      'picture/sky5.jpg', // back
+      'picture/sky6.jpg' // front
+    ] );
+    envMap.format = THREE.RGBFormat;
+
+    scene.background = envMap;*/
   scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0010 );
 
-  console.log(  scene.fog)
   // Create a basic perspective camera
   // camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
   camera = new THREE.PerspectiveCamera( 30, window.innerWidth/window.innerHeight, 1, 10000);
@@ -99,7 +116,7 @@ function init(){
   //stars
   var starsGeometry = new THREE.Geometry();
 
-  for ( var i = 0; i < 50000; i ++ ) {
+  for ( var i = 0; i < 10000; i ++ ) {
 
 	var star = new THREE.Vector3();
 	star.x = THREE.Math.randFloatSpread( 2000 );
