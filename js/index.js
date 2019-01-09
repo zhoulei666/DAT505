@@ -30,25 +30,26 @@ function init(){
 
   // Create an empty scene
 
-  var background = new THREE.CubeTextureLoader()
+  /*var background = new THREE.CubeTextureLoader()
     .setPath( 'picture/' )
   	.load( [ 'sky1.jpg', 'sky2.jpg', 'sky3.jpg', 'sky4.jpg', 'sky5.jpg', 'sky6.jpg' ] );
   background.format = THREE.RGBFormat;
+  background.size.
 	scene = new THREE.Scene();
-	scene.background = background;
+	scene.background = background;*/
 
-  /*scene = new THREE.Scene();
+  scene = new THREE.Scene();
   var envMap = new THREE.CubeTextureLoader().load( [
-      'picture/sky1.jpg', // right
-      'picture/sky2.jpg', // left
-      'picture/sky3.jpg', // top
-      'picture/sky4.jpg', // bottom
-      'picture/sky5.jpg', // back
-      'picture/sky6.jpg' // front
+      'picture/right.png', // right
+      'picture/left.png', // left
+      'picture/top.png', // top
+      'picture/bottom.png', // bottom
+      'picture/back.png', // back
+      'picture/front.png' // front
     ] );
     envMap.format = THREE.RGBFormat;
 
-    scene.background = envMap;*/
+    scene.background = envMap;
   scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0010 );
 
   // Create a basic perspective camera
