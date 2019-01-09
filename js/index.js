@@ -9,7 +9,6 @@ var starField
 //var radius = 6371;
 var clock;
 clock = new THREE.Clock();
-
 //Execute the main functions when the page loads
 
 window.onload = function() {
@@ -128,7 +127,7 @@ function init(){
 
   }
 
-  var starsMaterial = new THREE.PointsMaterial( { size:1 ,sizeAttenuation: false,color: 0x999999 } );
+  var starsMaterial = new THREE.PointsMaterial( { size:2 ,sizeAttenuation: false,color: 0x999999 } );
 
   starField = new THREE.Points( starsGeometry, starsMaterial );
 
