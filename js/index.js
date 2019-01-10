@@ -1,12 +1,8 @@
 //Global variables
-var renderer, scene, camera, composer, octoMain, skeleton, particle;
-var bar01, bar02;
+var renderer, scene, camera;
 var loader;
 var controls;
-//var width = 100;
-//var height = 100;
 var starField
-//var radius = 6371;
 var clock;
 clock = new THREE.Clock();
 //Execute the main functions when the page loads
@@ -22,12 +18,8 @@ function init(){
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
   renderer.setPixelRatio((window.devicePixelRatio) ? window.devicePixelRatio : 1);
   renderer.setSize( window.innerWidth, window.innerHeight );
-  //renderer.autoClear = false;
-  //renderer.setClearColor(0x000000, 0.0);
   document.getElementById('canvas').appendChild(renderer.domElement);
   //----------------------------------------------------------------------------
-
-  // Create an empty scene
 
   /*var background = new THREE.CubeTextureLoader()
     .setPath( 'picture/' )
@@ -35,9 +27,10 @@ function init(){
   background.format = THREE.RGBFormat;
   background.size.
 	scene = new THREE.Scene();
-	scene.background = background;*/
-
+	scene.background = background; (this way to make background can't work with audio)*/
+  // Create an empty scene
   scene = new THREE.Scene();
+  //create background for scene
   var envMap = new THREE.CubeTextureLoader().load( [
       'picture/right.png', // right
       'picture/left.png', // left
@@ -46,163 +39,73 @@ function init(){
       'picture/back.png', // back
       'picture/front.png' // front
     ] );
-    envMap.format = THREE.RGBFormat;
-
-    scene.background = envMap;
+  envMap.format = THREE.RGBFormat;
+  scene.background = envMap;
   scene.fog = new THREE.FogExp2( 0xefd1b5, 0.0010 );
 
   // Create a basic perspective camera
-  // camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 1, 1000 );
   camera = new THREE.PerspectiveCamera( 30, window.innerWidth/window.innerHeight, 1, 10000);
+  //Camera focuse on solar systerm
   camera.position.z = 200;
   camera.position.x = 60;
   camera.position.y = -500;
-
+  //the way to control camera movement
   controls = new THREE.OrbitControls( camera, renderer.domElement );
   scene.add(camera);
 
-//create audio
+  //create audio
   var listener = new THREE.AudioListener();
   camera.add( listener );
-
-// create a global audio source
+  // create a global audio source
   var sound = new THREE.Audio( listener );
-
-// load a sound and set it as the Audio object's buffer
+  // load a sound and set it as the Audio object's buffer
   var audioLoader = new THREE.AudioLoader();
   audioLoader.load( 'sound/bgm.mp3', function( buffer ) {
 	sound.setBuffer( buffer );
 	sound.setLoop( true );
 	sound.setVolume( 0.5 );
 	sound.play();
-});
-
-
-
+  });
 
   // Create the lights
   var ambientLight = new THREE.AmbientLight(0x999999, 1);
   scene.add(ambientLight);
-
+  //create sun light by pointlight
   var sphere = new THREE.SphereBufferGeometry( 0.5, 16, 8 );
-
   light = new THREE.PointLight( 0xffffff, 2, 500 );
-
-  //var textureLoader = new THREE.TextureLoader();
-
-  //var textureFlare = textureLoader.load( "picture/lens.png" );
-
-  //var lensflare = new THREE.Lensflare();
-
-  //lensflare.addElement( new THREE.LensflareElement( textureFlare, 512, 0 ) );
-
   light.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xffffff } ) ) );
   scene.add( light );
-  /*light2 = new THREE.PointLight( 0x0040ff, 2, 50 );
-  light2.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x0040ff } ) ) );
-  scene.add( light2 );
-  light3 = new THREE.PointLight( 0x80ff80, 2, 50 );
-  light3.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0x80ff80 } ) ) );
-  scene.add( light3 );
-  light4 = new THREE.PointLight( 0xffaa00, 2, 50 );
-  light4.add( new THREE.Mesh( sphere, new THREE.MeshBasicMaterial( { color: 0xffaa00 } ) ) );
-  scene.add( light4 );*/
-  //dirLight = new THREE.DirectionalLight( 0xffffff );
-	//	dirLight.position.set( - 1, 0, 1 ).normalize();
-	//	scene.add( dirLight );
-  let ambient = new THREE.AmbientLight(0xcccccc, 0.6);
+  var ambient = new THREE.AmbientLight(0xcccccc, 0.6);
   scene.add(ambient);
 
-  //stars
+  //create stars by PointsMaterial
   var starsGeometry = new THREE.Geometry();
-
+  //set number of stars
   for ( var i = 0; i < 10000; i ++ ) {
-
+  //set star movement track
 	var star = new THREE.Vector3();
 	star.x = THREE.Math.randFloatSpread( 2000 );
 	star.y = THREE.Math.randFloatSpread( 2000 );
 	star.z = THREE.Math.randFloatSpread( 2000 );
-
 	starsGeometry.vertices.push( star );
-
   }
-
+  //set stars colour and size ,collect it as a nebula by starField
   var starsMaterial = new THREE.PointsMaterial( { size:2 ,sizeAttenuation: false,color: 0x999999 } );
-
   starField = new THREE.Points( starsGeometry, starsMaterial );
-
-  //var time = Date.now() * 0.001;
-  //starField.rotation.x = time * 0.05;
-  //starField.rotation.y = time * 0.025;
-  //starField.rotation.z = time * 0.075;
   scene.add( starField );
-
-    /*var i, r = radius, starsGeometry = [ new THREE.BufferGeometry(), new THREE.BufferGeometry() ];
-    				var vertices1 = [];
-    				var vertices2 = [];
-    				var vertex = new THREE.Vector3();
-    				for ( i = 0; i < 250; i ++ ) {
-    					vertex.x = Math.random() * 2 - 1;
-    					vertex.y = Math.random() * 2 - 1;
-    					vertex.z = Math.random() * 2 - 1;
-    					vertex.multiplyScalar( r );
-    					vertices1.push( vertex.x, vertex.y, vertex.z );
-    				}
-    				for ( i = 0; i < 1500; i ++ ) {
-    					vertex.x = Math.random() * 2 - 1;
-    					vertex.y = Math.random() * 2 - 1;
-    					vertex.z = Math.random() * 2 - 1;
-    					vertex.multiplyScalar( r );
-    					vertices2.push( vertex.x, vertex.y, vertex.z );
-    				}
-    				starsGeometry[ 0 ].addAttribute( 'position', new THREE.Float32BufferAttribute( vertices1, 3 ) );
-    				starsGeometry[ 1 ].addAttribute( 'position', new THREE.Float32BufferAttribute( vertices2, 3 ) );
-    				var stars;
-    				var starsMaterials = [
-    					new THREE.PointsMaterial( { color: 0x555555, size: 2, sizeAttenuation: false } ),
-    					new THREE.PointsMaterial( { color: 0x555555, size: 1, sizeAttenuation: false } ),
-    					new THREE.PointsMaterial( { color: 0x333333, size: 2, sizeAttenuation: false } ),
-    					new THREE.PointsMaterial( { color: 0x3a3a3a, size: 1, sizeAttenuation: false } ),
-    					new THREE.PointsMaterial( { color: 0x1a1a1a, size: 2, sizeAttenuation: false } ),
-    					new THREE.PointsMaterial( { color: 0x1a1a1a, size: 1, sizeAttenuation: false } )
-    				];
-    				for ( i = 10; i < 30; i ++ ) {
-    					stars = new THREE.Points( starsGeometry[ i % 2 ], starsMaterials[ i % 6 ] );
-    					stars.rotation.x = Math.random() * 6;
-    					stars.rotation.y = Math.random() * 6;
-    					stars.rotation.z = Math.random() * 6;
-    					stars.scale.setScalar( i * 10 );
-    					stars.matrixAutoUpdate = false;
-    					stars.updateMatrix();
-    					scene.add( stars );
-              //console.log(stars);
-    				}
-    				/*renderer = new THREE.WebGLRenderer( { antialias: true } );
-    				renderer.setPixelRatio( window.devicePixelRatio );
-    				renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
-    				document.body.appendChild( renderer.domElement );*/
-
+  //balance window size
   window.addEventListener('resize', onWindowResize, false);
-}
-
-
-
-//Keep everything appearing properly on screen when window resizes
-function onWindowResize() {
+  }
+  //Keep everything appearing properly on screen when window resizes
+  function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix(); //maintain aspect ratio
   renderer.setSize(window.innerWidth, window.innerHeight);
-}
+  }
 
-function geometry(){
-
-
-//create planet
-
-  /*var map = new THREE.TextureLoader().load( 'js/moonsurface.jpg' );
-  map.wrapS = map.wrapT = THREE.RepeatWrapping;
-  map.anisotropy = 16;*/
-
+  function geometry(){
+  //create planet
+  //load imgs of planet
   var map2 = new THREE.TextureLoader().load( 'picture/sunsurface.jpg' );
   map2.wrapS = map2.wrapT = THREE.RepeatWrapping;
   map2.anisotropy = 16;
@@ -235,11 +138,7 @@ function geometry(){
   map9.wrapS = map9.wrapT = THREE.RepeatWrapping;
   map9.anisotropy = 16;
 
-  /*var material = new THREE.MeshPhongMaterial( {  map: map, side: THREE.DoubleSide } );
-  moon = new THREE.Mesh( new THREE.SphereBufferGeometry( 1, 20, 10 ), material );
-	//moon.position.set( 10, 0, 0 );
-	scene.add( moon );*/
-
+  //set planet shape, size, material and surface
   var material = new THREE.MeshPhongMaterial( {  map: map2, side: THREE.DoubleSide } );
   sun = new THREE.Mesh( new THREE.SphereBufferGeometry( 12, 20, 10 ), material );
   sun.position.set( 0, 0, 0 );
@@ -272,7 +171,8 @@ function geometry(){
   var material = new THREE.MeshPhongMaterial( {  map: map9, side: THREE.DoubleSide } );
   neptune = new THREE.Mesh( new THREE.SphereBufferGeometry( 5, 20, 10 ), material );
   scene.add( neptune );
-//create rings
+
+  //create rings for each planet
   var geometry = new THREE.TorusGeometry( 20, 0.1, 16, 100 );
   var material = new THREE.MeshBasicMaterial( { color: 0xffff66 } );
   var torus = new THREE.Mesh( geometry, material );
@@ -315,25 +215,26 @@ function geometry(){
   //Create the earth
   earth = new THREE.Object3D();
   scene.add(earth);
-
+  //load obj file
   loader = new THREE.OBJLoader();
   loader.load(
-    'earth.obj',
-    function (obj) {
-      earth.add(obj)
-    }
+  'earth.obj',
+  function (obj) {
+  earth.add(obj)
+  }
   )
-
+  //load mtl file
   var mtlLoader = new THREE.MTLLoader()
   mtlLoader.load(
-    'earth.mtl',
-    function (material) {
-      var objLoader = new THREE.OBJLoader()
-      objLoader.setMaterials(material)
-      objLoader.load(
-        'earth.obj',
-        function (object) {
-          earth.add(object);
+  'earth.mtl',
+  //set material
+  function (material) {
+  var objLoader = new THREE.OBJLoader()
+  objLoader.setMaterials(material)
+  objLoader.load(
+  'earth.obj',
+  function (object) {
+  earth.add(object);
         }
       )
     }
@@ -341,14 +242,12 @@ function geometry(){
 }
 
 
-// Render Loop
-function animate(){
+  // Render Loop
+  function animate(){
   requestAnimationFrame(animate);
-
+  //set planetary rotation
    earth.rotation.x -= 0.0020;
    earth.rotation.y -= 0.0030;
-   //moon.rotation.x -= 0.0020;
-   //moon.rotation.y -= 0.0030;
    sun.rotation.x -= 0.0020;
    sun.rotation.y -= 0.0030;
    mercury.rotation.x -= 0.0020;
@@ -365,20 +264,12 @@ function animate(){
    uranus.rotation.y -= 0.0030;
    neptune.rotation.x -= 0.0020;
    neptune.rotation.y -= 0.0030;
-
+  //add time. that control the planet move speed
    var time = Date.now() * 0.0005;
  	 var delta = clock.getDelta();
-
-   var motionX = Math.sin( time * 0.45 ) * 60;
-   var motionY = Math.cos( time * 0.45 ) * 60;
-
-   earth.position.x = motionX;
-	 earth.position.y = motionY;
-   //moon.position.x = motionX + 5;
-   //moon.position.y = motionY + 5;
-   //moon.rotation.x = Math.sin( time * 0.15 ) ;
-   //moon.rotation.x = Math.cos( time * 0.15 ) ;
-
+  //set planet revolution
+   earth.position.x = Math.sin( time * 0.45 ) * 60;
+	 earth.position.y = Math.cos( time * 0.45 ) * 60;
    mercury.position.x = Math.sin( time * 0.50 ) * 20;
    mercury.position.y = Math.cos( time * 0.50 ) * 20;
    venus.position.x = Math.sin( time * 0.30 ) * 40;
@@ -393,12 +284,10 @@ function animate(){
    uranus.position.y = Math.cos( time * 0.75 ) * 140;
    neptune.position.x = Math.sin( time * 0.65 ) * 160;
    neptune.position.y = Math.cos( time * 0.65 ) * 160;
-
+  //set nebula(stars) movement
    starField.rotation.x = time * 0.5;
    starField.rotation.y = time * 0.25;
 
-	 //earth.position.z = Math.cos( time * 0.5 ) * 10;
-  // Render the scene
   renderer.clear();
   renderer.render(scene, camera);
 
